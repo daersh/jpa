@@ -138,6 +138,67 @@ public class ProblemOfUsingDirectSQLTests {
     }
 
     /*목차 3. 패러다임 불일치(상속,연관관계,객체그래프탐색,방향성)
-        *   
+        * 3-1. 상속 문제
+            * 객체 지향 언어의 상속 개념과 유사한 것이 데이터베이스의 서브타입엔티티이다.(서브타입을 별도의 클래스로 나뉘었을 때)
+            * 슈퍼 타입의 모든 속성을 서브타입이 공유하지 못하여 물리적으로 다른 테이블로 분리가 된 형태이다.
+            * (설계에 따라서는 하나의 테이블로 속성이 추가되기도 한다.)
+            * 하지만 객체지향의 상속은 슈퍼타입의 속성을 공유하여 사용하므로 여기에서 패러다임의 불일치가 발생한다!
+        * 3-2. 연관관계 문제, 객체 그래프 탐색 문제, 방향성 문제
+            * 객체지향에서 말하는 "가지고 있는"(Association 연관관계 혹은 collection 연관관계) 경우 데이터베이스 저장 구조와 다른 형태이다.
+        *
+    * 설명.
+        * - database 테이블에 맞춘 객체
+        * public class Menu{
+        *   private int menuCode;
+        *   private String menuName;
+        *   private int menuPrice;
+        *   private int categoryCode;
+        *   private String orderableStatus;
+        * }
+        * - 객체지향 언어에 맞춘 객체 모델
+        * public class Menu{
+        *   private int menuCode;
+        *   private String menuName;
+        *   private int menuPrice;
+        *   private Category category;      //여기가 다름!(CategoryVO)
+        *   private String orderableStatus;
+        * }
+    * */
+
+    /*목차 4. 동일성 보장 문제 - JPA를 쓰는 마지막 이유*/
+    @DisplayName("조회한 두 개의 행을 담은 객체의 동일성 비교 테스트")
+    @Test
+    void testEquals() throws SQLException {
+        //given
+        String query = "SELECT menu_code, menu_name from tbl_menu where menu_code = 12";
+
+        //when
+        Statement stmt1 = con.createStatement();
+        ResultSet rset1 = stmt1.executeQuery(query);
+        Menu menu1 = null;
+        while (rset1.next()){
+            menu1= new Menu();
+            menu1.setMenuCode(rset1.getInt("menu_code"));
+            menu1.setMenuName(rset1.getString("menu_name"));
+        }
+
+        Statement stmt2 = con.createStatement();
+        ResultSet rset2 = stmt2.executeQuery(query);
+        Menu menu2 = null;
+        while (rset2.next()){
+            menu2= new Menu();
+            menu2.setMenuCode(rset2.getInt("menu_code"));
+            menu2.setMenuName(rset2.getString("menu_name"));
+        }
+        //then
+        Assertions.assertNotEquals(menu1,menu2);
+    }
+
+    /* JPA를 이용하면 동일 비교가 가능하다.
+        * Menu menu1 = entityMangeer.find(Menu.class, 12);  // 행 하나 조회
+        * Menu menu2 = entityMangeer.find(Menu.class, 12);  // 행 하나 조회
+        * System.out.println(menu1 == menu2); --> true 동일성이 보장된다. 같은객체이다.
+        --> menu1 = menu2
+        *
     * */
 }
