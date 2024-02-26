@@ -15,7 +15,7 @@
             <!--설명. Hibernate 설정 (실행되는 sql 구문을 format 형태로 보여주기)-->
             <property name="hibernate.show_sql" value="true"/>      <!--보여줘-->
             <property name="hibernate.format_sql" value="true"/>    <!--예쁘게 보여줘-->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect"/> <!--맥버전은 이거 필요하다는데 나는 잘됨..-->
+<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect"/> &lt;!&ndash;맥버전은 이거 필요하다는데 나는 잘됨..&ndash;&gt;-->
         </properties>
     </persistence-unit>
 </persistence>

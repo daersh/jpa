@@ -51,8 +51,6 @@ public class A_EntityManagerCRUDTests {
         menu.setMenuPrice(7000);
         menu.setCategoryCode(4);
         menu.setOrderableStatus("Y");
-
-
         //when
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
@@ -65,7 +63,6 @@ public class A_EntityManagerCRUDTests {
         //then
         Assertions.assertTrue(entityManager.contains(menu));/*현재 메뉴 객체가 영속 상태로 관리되는지 확인하기 위함*/
     }
-
     @Test
     public void 메뉴_이름_수정_테스트(){
         //given
@@ -83,5 +80,22 @@ public class A_EntityManagerCRUDTests {
         }
         //then
         Assertions.assertEquals(menuNameToChange,entityManager.find(Menu.class,2).getMenuName());
+    }
+    @Test
+    public void 메뉴_삭제_테스트(){
+        //given
+        Menu menuToRemove = entityManager.find(Menu.class,1);
+        //when
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+        try {
+            entityManager.remove(menuToRemove);
+            entityTransaction.commit();
+        }catch (Exception e){
+            entityTransaction.rollback();
+        }
+        //then
+        Menu remobeMenu = entityManager.find(Menu.class,1);
+        Assertions.assertNull(remobeMenu);
     }
 }
