@@ -195,8 +195,8 @@ public class ProblemOfUsingDirectSQLTests {
     }
 
     /* JPA를 이용하면 동일 비교가 가능하다.
-        * Menu menu1 = entityMangeer.find(Menu.class, 12);  // 행 하나 조회
-        * Menu menu2 = entityMangeer.find(Menu.class, 12);  // 행 하나 조회
+        * Menu menu1 = entityManager.find(Menu.class, 12);  // 행 하나 조회
+        * Menu menu2 = entityManager.find(Menu.class, 12);  // 행 하나 조회
         * System.out.println(menu1 == menu2); --> true 동일성이 보장된다. 같은객체이다.
         --> menu1 = menu2
         *
