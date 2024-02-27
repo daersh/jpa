@@ -23,7 +23,7 @@ public class Member {
     private String address;
     @Column(name = "enroll_date")
     private Date enrollDate;
-//    @Column(name = "member_role")
+    @Column(name = "member_role")
 //    @Enumerated(EnumType.STRING)
     @Enumerated(EnumType.ORDINAL)
     private RoleType memberRole;

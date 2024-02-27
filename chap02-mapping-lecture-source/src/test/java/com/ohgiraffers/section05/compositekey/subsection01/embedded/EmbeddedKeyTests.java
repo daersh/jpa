@@ -1,4 +1,4 @@
-package com.ohgiraffers.section04.enumtype;
+package com.ohgiraffers.section05.compositekey.subsection01.embedded;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -6,7 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
 
-public class EnumTypeMappingTests {
+public class EmbeddedKeyTests {
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
@@ -31,30 +31,21 @@ public class EnumTypeMappingTests {
     }
 
     @Test
-    public void enum타입_매핑_테스트(){
+    public void 임베디드_아이디를_활용한_복합키_테이블_매핑_테스트(){
         Member member = new Member();
-        member.setMemberNo(1);
-        member.setMemberId("user01");
-        member.setMemberPwd("pass01");
-        member.setNickname("홍길동");
-        member.setPhone("010-1234-5678");
-        member.setEmail("hong@gmail.com");
-        member.setAddress("서울시 서초구");
-        member.setEnrollDate(new java.util.Date());
-        member.setMemberRole(RoleType.ADMIN);
-        member.setStatus("Y");
+        member.setMemberpk(new MEMBERPK(1,"user01"));
+        member.setPhone("010-0000-0000");
+        member.setAddress("인천시 서구");
 
-        /* 테이블에 insert할 때
-        * 1. @Enumurated(EnumType.ORDINAL): 값이 숫자로 삽입(0 || 1 )
-        * 2. @Enumurated(EnumType.STRING): 값이 문자열로 삽입(ADMIN || MEMBER)
-        * 참고. 자바 객체 상에서는 ADMIN 또는 MEMBER라고만 무조건 나옴!!!!!!!!!!!
-        * */
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
         entityManager.persist(member);
         entityTransaction.commit();
 
-        Member member1 = entityManager.find(Member.class,1);
-        System.out.println("member1 = " + member1);
+        Member found = entityManager.find(Member.class,member.getMemberpk());
+        Assertions.assertEquals(member.getMemberpk(),found.getMemberpk());
+
+
     }
+
 }
