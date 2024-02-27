@@ -150,7 +150,8 @@ public class A_EntityLifeCycleTests {
        entityManager.detach(menuToDetach);
        menuToDetach.setMenuName("수박죽");
        Menu refoundMenu = entityManager.find(Menu.class,2);
-       System.out.println("refoundMenu.hashCode() = " + refoundMenu.hashCode());
+       /*주소는 다름*/
+       System.out.println("refoundMenu.hashCode() = " + menuToDetach.hashCode());
        System.out.println("refoundMenu.hashCode() = " + refoundMenu.hashCode());
        entityManager.merge(menuToDetach);
        Menu mergedMenu = entityManager.find(Menu.class,2);

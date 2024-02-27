@@ -14,7 +14,7 @@ import java.util.Date;
 public class Member {
     @Id /*pk*/
     @Column(name = "member_no")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "member_seq_table_generator")
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "member_seq_table_generator")
     private int memberNo;
     @Column(name = "member_id")
     private String memberId;
