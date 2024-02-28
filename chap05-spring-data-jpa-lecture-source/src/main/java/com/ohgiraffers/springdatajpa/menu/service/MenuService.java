@@ -1,6 +1,8 @@
 package com.ohgiraffers.springdatajpa.menu.service;
 
+import com.ohgiraffers.springdatajpa.menu.dto.CategoryDTO;
 import com.ohgiraffers.springdatajpa.menu.dto.MenuDTO;
+import com.ohgiraffers.springdatajpa.menu.entity.Category;
 import com.ohgiraffers.springdatajpa.menu.entity.Menu;
 import com.ohgiraffers.springdatajpa.menu.repository.CategoryRepository;
 import com.ohgiraffers.springdatajpa.menu.repository.MenuRepository;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,11 +61,34 @@ public class MenuService {
                                   pageable.getPageSize(),
                                   Sort.by("menuCode").descending());
         Page<Menu> menuList = menuRepository.findAll(pageable);
-
-
-
-
         return menuList.map(menu -> mapper.map(menu,MenuDTO.class));
     }
 
+
+    public List<MenuDTO> findMenuPrice(int menuPrice) {
+        /*전달 받은 가격을 초과하는 메뉴의 목록을 조회하는 메서드*/
+        List<Menu> menuList = menuRepository.findByMenuPriceGreaterThan(menuPrice);
+
+        return menuList.stream().map(menu->mapper.map(menu, MenuDTO.class)).collect(Collectors.toList());
+    }
+
+    public List<CategoryDTO> findAllCategory() {
+        List<Category> categoryList = categoryRepository.findAllCategory();
+        return categoryList.stream().map(category -> mapper.map(category,CategoryDTO.class)).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void registMenu(MenuDTO newMenu) {
+        menuRepository.save(mapper.map(newMenu,Menu.class));
+    }
+
+    @Transactional
+    public void modifyMenu(MenuDTO modifyMenu) {
+        Menu foundMenu = menuRepository.findById(modifyMenu.getMenuCode()).orElseThrow();
+        foundMenu.setMenuName(modifyMenu.getMenuName());
+    }
+    @Transactional
+    public void deleteMenu(int menuCode){
+        menuRepository.deleteById(menuCode);
+    }
 }

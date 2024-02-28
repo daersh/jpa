@@ -4,6 +4,8 @@ import com.ohgiraffers.springdatajpa.menu.dto.MenuDTO;
 import com.ohgiraffers.springdatajpa.menu.entity.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MenuRepository extends JpaRepository<Menu,Integer> {
+import java.util.List;
 
+public interface MenuRepository extends JpaRepository<Menu,Integer> {
+    List<Menu> findByMenuPriceGreaterThan(int menuPrice);
 }

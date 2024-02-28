@@ -2,6 +2,7 @@ package com.ohgiraffers.springdatajpa.menu.controller;
 
 import com.ohgiraffers.springdatajpa.common.Pagination;
 import com.ohgiraffers.springdatajpa.common.PagingButtonInfo;
+import com.ohgiraffers.springdatajpa.menu.dto.CategoryDTO;
 import com.ohgiraffers.springdatajpa.menu.dto.MenuDTO;
 import com.ohgiraffers.springdatajpa.menu.service.MenuService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -76,4 +77,57 @@ public class MenuController {
         return "menu/list";
     }
 
+    @GetMapping("/querymethod")
+    public void queryMethodePage(){}
+
+    @GetMapping("/search")
+    public String findMenuPrice(@RequestParam int menuPrice,Model model ){//@RequstParam: 요청온 변수와 같이 적으면 자동으로 받아짐
+        List<MenuDTO> menuList = menuService.findMenuPrice(menuPrice);
+        model.addAttribute("menuPrice",menuPrice);
+        model.addAttribute("menuList",menuList);
+        return "menu/searchResult";
+    }
+
+    @GetMapping("/regist")
+    public void registPage(){}
+
+    /*/menu/regist.html이 열리자 마자 js 코드를 통해 /menu/category 비동기 요청이 오게 된다.*/
+    @GetMapping(value = "/category",produces = "application/json;charset=UTF-8")
+    /*메소드에 @ResponseBody가 붙은 메소드의 반환형은 ViewResolver가 해석하지 않는다.*/
+    /*
+        @ResponseBody가 붙었을 때 기존과 다른 핸들러 메소드의 ㅊ이점
+        1. 핸들러 메소드의 반홚형이 어떤 것이든 상관 없다 -> 몯 json 문자열 형태로 요청이 들어온 곳으로 반환된다.
+        2. 한글이 포함된 데이터는 produces속성에 'application/json'라는 MIME 타입과 'charset=UTF-8'인코딩 타입을 붙여준다.;
+    * */
+    @ResponseBody
+    public List<CategoryDTO> findCategoryList(){
+        return menuService.findAllCategory();
+    }
+
+
+    /*SPRING DATA JPA로 DML 작업하기(insert, update, delete)*/
+    @PostMapping("/regist")
+    public String registMenu(MenuDTO newMenu){
+        menuService.registMenu(newMenu);
+        return "redirect:/menu/list";
+    }
+
+    @GetMapping("/modify")
+    public void modifyPage(){}
+
+    @PostMapping("/modify")
+    public String modifyMenu(MenuDTO modifyMenu){
+        menuService.modifyMenu(modifyMenu);
+        return "redirect:/menu/" +modifyMenu.getMenuCode();
+    }
+
+    @GetMapping("/delete")
+    public void deletePage(){}
+
+    @PostMapping("/delete")
+    public String deleteMenu(@RequestParam int menuCode){
+        menuService.deleteMenu(menuCode);
+
+        return "redirect:/menu/list";
+    }
 }
