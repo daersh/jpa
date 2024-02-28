@@ -6,6 +6,10 @@ import com.ohgiraffers.springdatajpa.menu.repository.CategoryRepository;
 import com.ohgiraffers.springdatajpa.menu.repository.MenuRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +46,23 @@ public class MenuService {
     /*2. findAll(페이징 전)*/
     public List<MenuDTO> findMenuList() {
         List<Menu> menuList = menuRepository.findAll(Sort.by("MenuCode").descending());
-
         return menuList.stream().map(menu -> mapper.map(menu,MenuDTO.class)).collect(Collectors.toList());
     }
+    /*3. (페이징 후)*/
+    public Page<MenuDTO> findMenuList(Pageable pageable){
+        /*1. 넘어온 pageable 에 담긴 페이지 번호를 인덱스 개념으로 바꿔서 인지 시킨다.
+        * 2. 한 페이지에 뿌려질 데이터 크기
+        * 3. 정렬 기준
+        * */
+        pageable = PageRequest.of(pageable.getPageNumber()<= 0?0 : pageable.getPageNumber() - 1,
+                                  pageable.getPageSize(),
+                                  Sort.by("menuCode").descending());
+        Page<Menu> menuList = menuRepository.findAll(pageable);
 
+
+
+
+        return menuList.map(menu -> mapper.map(menu,MenuDTO.class));
+    }
 
 }
