@@ -15,6 +15,3 @@ GET localhost:8080/response/image
 ###GET request Entity
 GET localhost:8080/response/entity
 
-#SECTION2
-###GET request users
-GET localhost:8080/entity/users
