@@ -107,8 +107,10 @@ public class MenuController {
 
     /*SPRING DATA JPA로 DML 작업하기(insert, update, delete)*/
     @PostMapping("/regist")
-    public String registMenu(MenuDTO newMenu){
+    public String registMenu(MenuDTO newMenu/*,Model model*/){
         menuService.registMenu(newMenu);
+//        model.addAttribute("menu",newMenu);
+//        return "/menu/detail";
         return "redirect:/menu/list";
     }
 
